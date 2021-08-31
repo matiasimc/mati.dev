@@ -4,20 +4,13 @@ import './App.css';
 function App() {
   return (
     <div className="container flex flex-col h-screen py-10 mx-auto">
-      <div className="flex-1 m-auto">
-        <h1 className="text-center">
+      <img className="rounded-full m-auto" src="profile_pic.jpg" width="150px"></img>
+      <div className="flex-1 mx-auto mt-4">
+        <span className="text-center font-bold text-3xl">
           Matias Meneses
-        </h1>
+        </span>
         
-        <div className="flex flex-1 block py-10 text-4xl">
-          <a
-            className="flex-1 text-center"
-            href="resume.pdf"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            3D
-          </a>
+        <div className="flex flex-1 py-10 text-4xl">
           <a
             className="flex-1 text-center"
             href="resume.pdf"
