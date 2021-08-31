@@ -4,7 +4,7 @@ import './App.css';
 function App() {
   return (
     <div className="container flex flex-col h-screen py-10 mx-auto">
-      <img className="rounded-full m-auto" src="profile_pic.jpg" width="150px"></img>
+      <img alt="" className="rounded-full m-auto" src="profile_pic.jpg" width="150px"></img>
       <div className="flex-1 mx-auto mt-4">
         <span className="text-center font-bold text-3xl">
           Matias Meneses
