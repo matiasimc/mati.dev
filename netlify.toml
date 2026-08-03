@@ -1,6 +1,9 @@
 [build]
   command = "node build-config.js"
 
+[build.environment]
+  SECRETS_SCAN_OMIT_KEYS = "GOOGLE_CLIENT_ID"
+
 [[redirects]]
   from = "/pointz/*"
   to = "/pointz/index.html"
