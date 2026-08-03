@@ -1,6 +1,6 @@
 [build]
   command = "node build-config.js"
-  publish = "."   # or "public" / "dist" depending on your main site structure
+  publish = "public"
 
 [build.environment]
   SECRETS_SCAN_OMIT_KEYS = "GOOGLE_CLIENT_ID"
