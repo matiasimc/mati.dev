@@ -1,0 +1,7 @@
+[build]
+  command = "node build-config.js"
+
+[[redirects]]
+  from = "/pointz/*"
+  to = "/pointz/index.html"
+  status = 200
