@@ -1130,8 +1130,10 @@
     ];
 
     // ── Google Auth & Drive Sync ────────────────────────────────
-    // Client ID injected by serve_app.ps1 from .env → config.js → window.ENV
-    const googleClientId = (window.ENV && window.ENV.GOOGLE_CLIENT_ID) ? window.ENV.GOOGLE_CLIENT_ID : '';
+    // Client ID injected by serve_app.ps1 from .env → config.js → window.ENV (with fallback for static hosts like Netlify)
+    const googleClientId = (window.ENV && window.ENV.GOOGLE_CLIENT_ID && window.ENV.GOOGLE_CLIENT_ID !== 'YOUR_CLIENT_ID_HERE.apps.googleusercontent.com')
+      ? window.ENV.GOOGLE_CLIENT_ID
+      : '198179604436-req2n4aapsmtks8okkiomlf7v6ppgm2r.apps.googleusercontent.com';
     let driveAccessToken = null;
     let driveFileId = null; // cached file ID to avoid repeated searches
 
