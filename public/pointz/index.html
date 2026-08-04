@@ -995,6 +995,17 @@
         </div>
       </div>
 
+      <!-- Mission Reroll Controls -->
+      <div style="background: rgba(0,0,0,0.3); border: 1px solid var(--border-color); border-radius: 14px; padding: 14px; margin-bottom: 16px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
+          <div>
+            <h4 style="color: var(--cyan); font-family: Orbitron; font-size: 0.95rem;">🎲 Mission Reroll</h4>
+            <div style="font-size: 0.8rem; color: var(--text-sub); margin-top: 2px;">Reshuffle active daily &amp; weekly missions based on priority</div>
+          </div>
+          <button class="btn-action" style="background: linear-gradient(135deg, var(--cyan), var(--pink)); color: white; padding: 6px 14px; border-radius: 10px; font-weight:700; white-space:nowrap;" onclick="manualRerollMissions()">🎲 Reroll Missions</button>
+        </div>
+      </div>
+
       <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 10px;">
         <h4 style="color: var(--cyan);">Task Management</h4>
         <button class="btn-action" style="background: var(--pink); color: white;" onclick="openTaskModal()">+ Create
@@ -1826,14 +1837,14 @@
       return `${d.getFullYear()}-W${String(week).padStart(2, '0')}`;
     }
 
-    function selectActiveMissions() {
+    function selectActiveMissions(forceReroll = false) {
       const today = getTodayString();
       const thisWeek = getWeekString();
+      let stateChanged = false;
 
-      // Only re-randomize dailies when the calendar day changes
-      if (state.dailyAssignedDate !== today) {
-        // If previous active dailies were not all completed, reset daily streak!
-        if (state.dailyAssignedDate && state.activeDailyIds.length > 0) {
+      // Re-randomize dailies if day changed, no dailies assigned, or forced reroll
+      if (forceReroll || state.dailyAssignedDate !== today || !state.activeDailyIds || state.activeDailyIds.length === 0) {
+        if (!forceReroll && state.dailyAssignedDate && state.activeDailyIds && state.activeDailyIds.length > 0) {
           const allPrevDone = state.activeDailyIds.every(id => state.completedDailyIds.includes(id));
           if (!allPrevDone) {
             state.dailyStreak = 0;
@@ -1841,13 +1852,14 @@
         }
         const dailies = tasks.filter(t => t.type === 'daily' && !t.isArchived);
         state.activeDailyIds = weightedRandomSelect(dailies, state.dailySlotsCount).map(t => t.id);
-        state.completedDailyIds = [];  // fresh slate for the new day
+        state.completedDailyIds = [];  // fresh slate for the new day/reroll
         state.dailyAssignedDate = today;
+        stateChanged = true;
       }
 
-      // Only re-randomize weeklies when the calendar week changes
-      if (state.weeklyAssignedWeek !== thisWeek) {
-        if (state.weeklyAssignedWeek && state.activeWeeklyIds.length > 0) {
+      // Re-randomize weeklies if week changed, no weeklies assigned, or forced reroll
+      if (forceReroll || state.weeklyAssignedWeek !== thisWeek || !state.activeWeeklyIds || state.activeWeeklyIds.length === 0) {
+        if (!forceReroll && state.weeklyAssignedWeek && state.activeWeeklyIds && state.activeWeeklyIds.length > 0) {
           const allPrevDone = state.activeWeeklyIds.every(id => state.completedWeeklyIds.includes(id));
           if (!allPrevDone) {
             state.weeklyStreak = 0;
@@ -1855,8 +1867,25 @@
         }
         const weeklies = tasks.filter(t => t.type === 'weekly' && !t.isArchived);
         state.activeWeeklyIds = weightedRandomSelect(weeklies, state.weeklySlotsCount).map(t => t.id);
-        state.completedWeeklyIds = [];  // fresh slate for the new week
+        state.completedWeeklyIds = [];  // fresh slate for the new week/reroll
         state.weeklyAssignedWeek = thisWeek;
+        stateChanged = true;
+      }
+
+      // Immediately sync new assignments to Drive so page refreshes retain exact chosen missions
+      if (stateChanged) {
+        autoSaveState();
+      }
+    }
+
+    function manualRerollMissions() {
+      selectActiveMissions(true);
+      render();
+      let pop = document.getElementById('dopamine-pop');
+      if (pop) {
+        pop.innerText = '🎲 MISSIONS REROLLED!';
+        pop.classList.add('show');
+        setTimeout(() => pop.classList.remove('show'), 1600);
       }
     }
 
