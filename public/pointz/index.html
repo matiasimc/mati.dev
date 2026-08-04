@@ -1451,6 +1451,9 @@
       controls = new THREE.OrbitControls(camera, renderer.domElement);
       controls.enableDamping = true;
       controls.dampingFactor = 0.05;
+      controls.enablePan = false; // Disable camera panning off-center
+      controls.minPolarAngle = Math.PI / 2; // Lock vertical pitch angle (horizontal level only)
+      controls.maxPolarAngle = Math.PI / 2;
 
       // Studio Lighting
       const ambientLight = new THREE.AmbientLight(0xffffff, 1.35);
@@ -1555,6 +1558,9 @@
       shopControls = new THREE.OrbitControls(shopCamera, shopRenderer.domElement);
       shopControls.enableDamping = true;
       shopControls.dampingFactor = 0.05;
+      shopControls.enablePan = false;
+      shopControls.minPolarAngle = Math.PI / 2;
+      shopControls.maxPolarAngle = Math.PI / 2;
     }
 
     function initOffscreenThumbnailRenderer() {
